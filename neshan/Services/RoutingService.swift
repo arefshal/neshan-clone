@@ -1,10 +1,18 @@
+//
+//  RoutingService.swift
+//  neshan
+//
+//  Created by Aref on 9/5/24.
+//
+
+
 import Foundation
 import MapKit
 
 class RoutingService {
-    let apiKey = "YOUR_API_KEY" // کلید API شما
+    let apiKey = "service.4ce361741bbd4a2391b15c1004763139"
     
-    // دریافت مسیر از Neshan API
+    
     func getRoute(from origin: CLLocationCoordinate2D, to destination: CLLocationCoordinate2D, completion: @escaping (MKPolyline?) -> Void) {
         let baseUrl = "https://api.neshan.org/v4/direction/no-traffic"
         let originString = "\(origin.latitude),\(origin.longitude)"
@@ -32,25 +40,70 @@ class RoutingService {
                 
                 if let overviewPolyline = routeResponse.routes.first?.overview_polyline.points {
                     let polyline = self.decodePolyline(overviewPolyline)
-                    completion(polyline)
+                    DispatchQueue.main.async {
+                        completion(polyline)
+                    }
                 } else {
                     print("No routes found")
-                    completion(nil)
+                    DispatchQueue.main.async {
+                        completion(nil)
+                    }
                 }
             } catch {
                 print("Error decoding route response: \(error)")
-                completion(nil)
+                DispatchQueue.main.async {
+                    completion(nil)
+                }
             }
         }
         
         task.resume()
     }
     
-    // Decode کردن Polyline برای رسم مسیر روی نقشه
+  
     func decodePolyline(_ encodedPolyline: String) -> MKPolyline {
-        let path = encodedPolyline.decodePolyline()
-        var coordinates = path.map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) }
-        let polyline = MKPolyline(coordinates: &coordinates, count: coordinates.count)
-        return polyline
+        let path = encodedPolyline.decodedPolyline()
+        let coordinates = path.map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) }
+        return MKPolyline(coordinates: coordinates, count: coordinates.count)
     }
 }
+
+// Add this extension at the end of the file
+extension String {
+    func decodedPolyline() -> [(latitude: Double, longitude: Double)] {
+        var coordinates: [(Double, Double)] = []
+        var index = 0
+        var lat = 0.0
+        var lon = 0.0
+
+        while index < self.count {
+            var result = 1
+            var shift = 0
+            var b: Int
+            repeat {
+                b = Int(self[self.index(self.startIndex, offsetBy: index)].asciiValue!) - 63
+                index += 1
+                result += (b & 0x1f) << shift
+                shift += 5
+            } while b >= 0x20
+
+            lat += Double((result & 1) != 0 ? ~(result >> 1) : (result >> 1))
+            
+            result = 1
+            shift = 0
+            repeat {
+                b = Int(self[self.index(self.startIndex, offsetBy: index)].asciiValue!) - 63
+                index += 1
+                result += (b & 0x1f) << shift
+                shift += 5
+            } while b >= 0x20
+
+            lon += Double((result & 1) != 0 ? ~(result >> 1) : (result >> 1))
+            
+            coordinates.append((lat * 1e-5, lon * 1e-5))
+        }
+
+        return coordinates
+    }
+}
+
