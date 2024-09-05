@@ -9,9 +9,9 @@
 import Foundation
 
 class NeshanAPIService {
-    let apiKey = "YOUR_API_KEY" // کلید API شما
+    let apiKey = "service.4ce361741bbd4a2391b15c1004763139"
     
-    // جستجوی مکان‌ها با استفاده از Neshan API
+    
     func searchPlaces(query: String, lat: Double, lng: Double, completion: @escaping ([SearchResult]) -> Void) {
         let baseUrl = "https://api.neshan.org/v1/search"
         let urlString = "\(baseUrl)?term=\(query)&lat=\(lat)&lng=\(lng)"
