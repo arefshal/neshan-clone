@@ -1,23 +1,40 @@
 //
-//  ViewController.swift
+//  MapViewController.swift
 //  neshan
 //
-//  Created by Aref on 9/5/24.
+
 //
 
 import UIKit
 import MapKit
 import CoreLocation
 
+/// A view controller that displays a map with search functionality and routing capabilities.
 class MapViewController: UIViewController {
     
+    // MARK: - Properties
+    
     private let mapView = MKMapView()
+    
+ 
     private let searchBar = UISearchBar()
+    
+   
     private let viewModel = MapViewModel()
+    
+    
     private let locationManager = CLLocationManager()
+    
+  
     private let routingService = RoutingService()
+    
+   
     private var currentRoute: MKPolyline?
+    
+    
     private let showLocationButton = UIButton(type: .system)
+    
+    // MARK: - Lifecycle Methods
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,6 +48,9 @@ class MapViewController: UIViewController {
         locationManager.requestWhenInUseAuthorization()
     }
     
+    // MARK: - Setup Methods
+    
+    /// Sets up the main map view.
     private func setupMapView() {
         mapView.frame = self.view.bounds
         mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -39,10 +59,13 @@ class MapViewController: UIViewController {
         self.view.addSubview(mapView)
     }
     
+    /// Configures the search bar.
     private func setupSearchBar() {
         searchBar.delegate = self
         searchBar.placeholder = "Search for places..."
         searchBar.sizeToFit()
+        searchBar.backgroundImage = UIImage()
+        searchBar.barTintColor = .clear
         searchBar.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(searchBar)
         
@@ -53,24 +76,62 @@ class MapViewController: UIViewController {
         ])
     }
     
+    /// Sets up the location manager.
     private func setupLocationManager() {
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.startUpdatingLocation()
     }
     
+    /// Establishes bindings with the view model.
     private func setupBindings() {
         viewModel.onUpdate = { [weak self] in
             self?.updateMapAnnotations()
         }
     }
     
-    private func updateMapAnnotations() {
-        mapView.removeAnnotations(mapView.annotations)
-        let annotations = viewModel.getAnnotations()
-        mapView.addAnnotations(annotations)
+    /// Configures the show location button.
+    private func setupShowLocationButton() {
+        showLocationButton.setImage(UIImage(systemName: "location"), for: .normal)
+        showLocationButton.backgroundColor = .white
+        showLocationButton.layer.cornerRadius = 20
+        showLocationButton.layer.shadowColor = UIColor.black.cgColor
+        showLocationButton.layer.shadowOffset = CGSize(width: 0, height: 2)
+        showLocationButton.layer.shadowRadius = 2
+        showLocationButton.layer.shadowOpacity = 0.25
+        showLocationButton.addTarget(self, action: #selector(showCurrentLocation), for: .touchUpInside)
+        
+        view.addSubview(showLocationButton)
+        showLocationButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            showLocationButton.widthAnchor.constraint(equalToConstant: 40),
+            showLocationButton.heightAnchor.constraint(equalToConstant: 40),
+            showLocationButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            showLocationButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
+        ])
     }
     
+    // MARK: - Action Methods
+    
+    /// Shows the user's current location on the map and removes any existing route.
+    @objc private func showCurrentLocation() {
+        if let userLocation = locationManager.location?.coordinate {
+            let region = MKCoordinateRegion(center: userLocation, latitudinalMeters: 1000, longitudinalMeters: 1000)
+            mapView.setRegion(region, animated: true)
+            
+            // Remove existing route if any
+            if let currentRoute = currentRoute {
+                mapView.removeOverlay(currentRoute)
+                self.currentRoute = nil
+            }
+        }
+    }
+    
+    // MARK: - Helper Methods
+    
+    /// Displays a route from the user's current location to a specified destination.
+    ///
+    /// - Parameter destinationCoordinate: The coordinate of the destination.
     private func showRoute(to destinationCoordinate: CLLocationCoordinate2D) {
         guard let userLocation = locationManager.location?.coordinate else { return }
         
@@ -92,41 +153,16 @@ class MapViewController: UIViewController {
         }
     }
     
-    private func setupShowLocationButton() {
-        showLocationButton.setImage(UIImage(systemName: "location"), for: .normal)
-        showLocationButton.backgroundColor = .white
-        showLocationButton.layer.cornerRadius = 20
-        showLocationButton.layer.shadowColor = UIColor.black.cgColor
-        showLocationButton.layer.shadowOffset = CGSize(width: 0, height: 2)
-        showLocationButton.layer.shadowRadius = 2
-        showLocationButton.layer.shadowOpacity = 0.25
-        showLocationButton.addTarget(self, action: #selector(showCurrentLocation), for: .touchUpInside)
-        
-        view.addSubview(showLocationButton)
-        showLocationButton.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            showLocationButton.widthAnchor.constraint(equalToConstant: 40),
-            showLocationButton.heightAnchor.constraint(equalToConstant: 40),
-            showLocationButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            showLocationButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
-        ])
-    }
-    
-    @objc private func showCurrentLocation() {
-        if let userLocation = locationManager.location?.coordinate {
-            let region = MKCoordinateRegion(center: userLocation, latitudinalMeters: 1000, longitudinalMeters: 1000)
-            mapView.setRegion(region, animated: true)
-            
-            // Remove existing route if any
-            if let currentRoute = currentRoute {
-                mapView.removeOverlay(currentRoute)
-                self.currentRoute = nil
-            }
-        }
+    /// Updates the map annotations based on search results.
+    private func updateMapAnnotations() {
+        mapView.removeAnnotations(mapView.annotations)
+        let annotations = viewModel.getAnnotations()
+        mapView.addAnnotations(annotations)
     }
 }
 
 // MARK: - CLLocationManagerDelegate
+
 extension MapViewController: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -147,6 +183,7 @@ extension MapViewController: CLLocationManagerDelegate {
 }
 
 // MARK: - MKMapViewDelegate
+
 extension MapViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         if let polyline = overlay as? MKPolyline {
@@ -166,9 +203,9 @@ extension MapViewController: MKMapViewDelegate {
 }
 
 // MARK: - UISearchBarDelegate
+
 extension MapViewController: UISearchBarDelegate {
     
-   
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let query = searchBar.text, !query.isEmpty else { return }
 
