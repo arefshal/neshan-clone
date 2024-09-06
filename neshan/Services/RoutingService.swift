@@ -10,11 +10,10 @@ import Foundation
 import MapKit
 
 class RoutingService {
-    let apiKey = "service.4ce361741bbd4a2391b15c1004763139"
-    
+    let apiKey = "service.15c1b592643248e28e5dc35f2009884a"
     
     func getRoute(from origin: CLLocationCoordinate2D, to destination: CLLocationCoordinate2D, completion: @escaping (MKPolyline?) -> Void) {
-        let baseUrl = "https://api.neshan.org/v4/direction/no-traffic"
+        let baseUrl = "https://api.neshan.org/v4/direction"
         let originString = "\(origin.latitude),\(origin.longitude)"
         let destinationString = "\(destination.latitude),\(destination.longitude)"
         
@@ -60,8 +59,7 @@ class RoutingService {
         task.resume()
     }
     
-  
-    func decodePolyline(_ encodedPolyline: String) -> MKPolyline {
+    private func decodePolyline(_ encodedPolyline: String) -> MKPolyline {
         let path = encodedPolyline.decodedPolyline()
         let coordinates = path.map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) }
         return MKPolyline(coordinates: coordinates, count: coordinates.count)
@@ -106,4 +104,3 @@ extension String {
         return coordinates
     }
 }
-

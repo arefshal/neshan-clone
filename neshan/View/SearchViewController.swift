@@ -44,7 +44,7 @@ class SearchViewController: UIViewController, UITableViewDelegate, UITableViewDa
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.textLabel?.text = searchViewModel.getTitles()[indexPath.row] 
+        cell.textLabel?.text = searchViewModel.getTitles()[indexPath.row]
         return cell
     }
     
