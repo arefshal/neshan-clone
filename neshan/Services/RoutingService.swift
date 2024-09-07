@@ -5,38 +5,58 @@
 //  Created by Aref on 9/5/24.
 //
 
-
 import Foundation
 import MapKit
+import CoreLocation
 
+/// A service class responsible for handling routing requests using the Neshan API.
 class RoutingService {
-    let apiKey = "service.15c1b592643248e28e5dc35f2009884a"
     
+    // MARK: - Properties
+    
+    /// The API key used for authenticating requests to the Neshan API.
+    private let apiKey = "service.4ce361741bbd4a2391b15c1004763139"
+    
+    // MARK: - Public Methods
+    
+    /// Retrieves a route between two points using the Neshan API.
+    ///
+    /// - Parameters:
+    ///   - origin: The starting point of the route.
+    ///   - destination: The end point of the route.
+    ///   - completion: A closure called with the resulting MKPolyline, or nil if routing failed.
     func getRoute(from origin: CLLocationCoordinate2D, to destination: CLLocationCoordinate2D, completion: @escaping (MKPolyline?) -> Void) {
-        let baseUrl = "https://api.neshan.org/v4/direction"
+        // Construct the base URL for the Neshan routing API
+        let baseUrl = "https://api.neshan.org/v4/direction/no-traffic"
         let originString = "\(origin.latitude),\(origin.longitude)"
         let destinationString = "\(destination.latitude),\(destination.longitude)"
         
+        // Construct the full URL with query parameters
         guard let url = URL(string: "\(baseUrl)?origin=\(originString)&destination=\(destinationString)&type=car") else {
             print("Invalid URL")
             completion(nil)
             return
         }
         
+        // Create and configure the URL request
         var request = URLRequest(url: url)
         request.addValue(apiKey, forHTTPHeaderField: "Api-Key")
         
+        // Create and start the data task
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            // Handle network errors
             guard let data = data, error == nil else {
                 print("Error fetching route: \(String(describing: error))")
                 completion(nil)
                 return
             }
             
+            // Attempt to decode the response
             do {
                 let decoder = JSONDecoder()
                 let routeResponse = try decoder.decode(RouteResponse.self, from: data)
                 
+                // Extract and decode the polyline if available
                 if let overviewPolyline = routeResponse.routes.first?.overview_polyline.points {
                     let polyline = self.decodePolyline(overviewPolyline)
                     DispatchQueue.main.async {
@@ -59,6 +79,12 @@ class RoutingService {
         task.resume()
     }
     
+    // MARK: - Private Methods
+    
+    /// Decodes an encoded polyline string into an MKPolyline object.
+    ///
+    /// - Parameter encodedPolyline: The encoded polyline string.
+    /// - Returns: An MKPolyline object representing the decoded path.
     private func decodePolyline(_ encodedPolyline: String) -> MKPolyline {
         let path = encodedPolyline.decodedPolyline()
         let coordinates = path.map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) }
