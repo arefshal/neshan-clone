@@ -145,14 +145,17 @@ class MapViewController: UIViewController {
                 }
                 
                 if let polyline = polyline {
+                   
                     self.currentRoute = polyline
                     self.mapView.addOverlay(polyline)
+                    
+                   
                     self.mapView.setVisibleMapRect(polyline.boundingMapRect, edgePadding: UIEdgeInsets(top: 50, left: 50, bottom: 50, right: 50), animated: true)
                 }
             }
         }
     }
-    
+
     /// Updates the map annotations based on search results.
     private func updateMapAnnotations() {
         mapView.removeAnnotations(mapView.annotations)
@@ -185,22 +188,29 @@ extension MapViewController: CLLocationManagerDelegate {
 // MARK: - MKMapViewDelegate
 
 extension MapViewController: MKMapViewDelegate {
+    
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        guard let annotation = view.annotation else { return }
+        
+      
+        if let coordinate = annotation.coordinate as? CLLocationCoordinate2D {
+           
+            showRoute(to: coordinate)
+        }
+    }
+
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         if let polyline = overlay as? MKPolyline {
-            let renderer = MKPolylineRenderer(overlay: polyline)
+            let renderer = MKPolylineRenderer(polyline: polyline)
             renderer.strokeColor = UIColor.blue
             renderer.lineWidth = 4.0
             return renderer
         }
         return MKOverlayRenderer(overlay: overlay)
     }
-
-    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        if let annotation = view.annotation {
-            showRoute(to: annotation.coordinate)
-        }
-    }
 }
+
+
 
 // MARK: - UISearchBarDelegate
 
