@@ -15,35 +15,21 @@ class MapViewController: UIViewController {
     // MARK: - Properties
     
     private let mapView = MKMapView()
-    
- 
-    private let searchBar = UISearchBar()
-    
-   
-    private let viewModel = MapViewModel()
-    
-    
     private let locationManager = CLLocationManager()
-    
-  
-    private let routingService = RoutingService()
-    
-   
-    private var currentRoute: MKPolyline?
-    
-    
     private let showLocationButton = UIButton(type: .system)
-    
+    private let searchButton = UIButton(type: .system)
+    private var currentRoute: MKPolyline?
+    private let routingService = RoutingService()
+     var userLocation: CLLocationCoordinate2D?
     // MARK: - Lifecycle Methods
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupMapView()
-        setupSearchBar()
         setupLocationManager()
-        setupBindings()
         setupShowLocationButton()
+        setupSearchButton()
         
         locationManager.requestWhenInUseAuthorization()
     }
@@ -59,38 +45,12 @@ class MapViewController: UIViewController {
         self.view.addSubview(mapView)
     }
     
-    /// Configures the search bar.
-    private func setupSearchBar() {
-        searchBar.delegate = self
-        searchBar.placeholder = "Search for places..."
-        searchBar.sizeToFit()
-        searchBar.backgroundImage = UIImage()
-        searchBar.barTintColor = .clear
-        searchBar.translatesAutoresizingMaskIntoConstraints = false
-        self.view.addSubview(searchBar)
-        
-        NSLayoutConstraint.activate([
-            searchBar.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
-            searchBar.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-            searchBar.trailingAnchor.constraint(equalTo: self.view.trailingAnchor)
-        ])
-    }
-    
-    /// Sets up the location manager.
     private func setupLocationManager() {
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.startUpdatingLocation()
     }
     
-    /// Establishes bindings with the view model.
-    private func setupBindings() {
-        viewModel.onUpdate = { [weak self] in
-            self?.updateMapAnnotations()
-        }
-    }
-    
-    /// Configures the show location button.
     private func setupShowLocationButton() {
         showLocationButton.setImage(UIImage(systemName: "location"), for: .normal)
         showLocationButton.backgroundColor = .white
@@ -111,9 +71,28 @@ class MapViewController: UIViewController {
         ])
     }
     
+    private func setupSearchButton() {
+        searchButton.setImage(UIImage(systemName: "magnifyingglass"), for: .normal)
+        searchButton.backgroundColor = .white
+        searchButton.layer.cornerRadius = 20
+        searchButton.layer.shadowColor = UIColor.black.cgColor
+        searchButton.layer.shadowOffset = CGSize(width: 0, height: 2)
+        searchButton.layer.shadowRadius = 2
+        searchButton.layer.shadowOpacity = 0.25
+        searchButton.addTarget(self, action: #selector(showSearchView), for: .touchUpInside)
+        
+        view.addSubview(searchButton)
+        searchButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            searchButton.widthAnchor.constraint(equalToConstant: 40),
+            searchButton.heightAnchor.constraint(equalToConstant: 40),
+            searchButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            searchButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
+        ])
+    }
+    
     // MARK: - Action Methods
     
-    /// Shows the user's current location on the map and removes any existing route.
     @objc private func showCurrentLocation() {
         if let userLocation = locationManager.location?.coordinate {
             let region = MKCoordinateRegion(center: userLocation, latitudinalMeters: 1000, longitudinalMeters: 1000)
@@ -127,59 +106,85 @@ class MapViewController: UIViewController {
         }
     }
     
-    // MARK: - Helper Methods
+    @objc private func showSearchView() {
+        let searchVC = SearchViewController()
+        searchVC.mapViewController = self
+        present(searchVC, animated: true, completion: nil)
+    }
     
-    /// Displays a route from the user's current location to a specified destination.
-    ///
-    /// - Parameter destinationCoordinate: The coordinate of the destination.
+    // MARK: - Public Methods
+    
+    func pinLocation(title: String, coordinate: CLLocationCoordinate2D) {
+        mapView.removeAnnotations(mapView.annotations)
+        
+        if let currentRoute = currentRoute {
+            mapView.removeOverlay(currentRoute)
+            self.currentRoute = nil
+        }
+        
+        let annotation = MKPointAnnotation()
+        annotation.title = title
+        annotation.coordinate = coordinate
+        
+        mapView.addAnnotation(annotation)
+        
+        let region = MKCoordinateRegion(center: coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
+        mapView.setRegion(region, animated: true)
+    }
+    
+    func showSearchResults(_ results: [SearchResult]) {
+        mapView.removeAnnotations(mapView.annotations)
+        
+        for result in results {
+            let annotation = MKPointAnnotation()
+            annotation.title = result.title
+            annotation.coordinate = CLLocationCoordinate2D(latitude: result.location.y, longitude: result.location.x)
+            mapView.addAnnotation(annotation)
+        }
+        
+        if let firstResult = results.first {
+            let region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: firstResult.location.y, longitude: firstResult.location.x), latitudinalMeters: 5000, longitudinalMeters: 5000)
+            mapView.setRegion(region, animated: true)
+        }
+    }
+    
+    // MARK: - Private Methods
+    
     private func showRoute(to destinationCoordinate: CLLocationCoordinate2D) {
         guard let userLocation = locationManager.location?.coordinate else { return }
         
-        viewModel.getRoute(from: userLocation, to: destinationCoordinate) { [weak self] polyline in
+        routingService.getRoute(from: userLocation, to: destinationCoordinate) { [weak self] polyline in
             guard let self = self else { return }
             
             DispatchQueue.main.async {
-                // Remove the previous route if it exists
                 if let currentRoute = self.currentRoute {
                     self.mapView.removeOverlay(currentRoute)
                 }
                 
                 if let polyline = polyline {
-                   
                     self.currentRoute = polyline
                     self.mapView.addOverlay(polyline)
                     
-                   
                     self.mapView.setVisibleMapRect(polyline.boundingMapRect, edgePadding: UIEdgeInsets(top: 50, left: 50, bottom: 50, right: 50), animated: true)
                 }
             }
         }
-    }
-
-    /// Updates the map annotations based on search results.
-    private func updateMapAnnotations() {
-        mapView.removeAnnotations(mapView.annotations)
-        let annotations = viewModel.getAnnotations()
-        mapView.addAnnotations(annotations)
     }
 }
 
 // MARK: - CLLocationManagerDelegate
 
 extension MapViewController: CLLocationManagerDelegate {
-    
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.first else { return }
+        userLocation = location.coordinate
         
-        // Center the map on the user's location when it's first obtained
         let region = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
         mapView.setRegion(region, animated: true)
         
-        viewModel.search(query: "Cafe", lat: location.coordinate.latitude, lng: location.coordinate.longitude)
-        
         locationManager.stopUpdatingLocation()
     }
-
+    
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print("Failed to get user location: \(error)")
     }
@@ -188,17 +193,30 @@ extension MapViewController: CLLocationManagerDelegate {
 // MARK: - MKMapViewDelegate
 
 extension MapViewController: MKMapViewDelegate {
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        guard !(annotation is MKUserLocation) else { return nil }
+        
+        let identifier = "CustomPin"
+        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+        
+        if annotationView == nil {
+            annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+            annotationView?.canShowCallout = true
+        } else {
+            annotationView?.annotation = annotation
+        }
+        
+        return annotationView
+    }
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         guard let annotation = view.annotation else { return }
         
-      
         if let coordinate = annotation.coordinate as? CLLocationCoordinate2D {
-           
             showRoute(to: coordinate)
         }
     }
-
+    
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         if let polyline = overlay as? MKPolyline {
             let renderer = MKPolylineRenderer(polyline: polyline)
@@ -207,25 +225,5 @@ extension MapViewController: MKMapViewDelegate {
             return renderer
         }
         return MKOverlayRenderer(overlay: overlay)
-    }
-}
-
-
-
-// MARK: - UISearchBarDelegate
-
-extension MapViewController: UISearchBarDelegate {
-    
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        guard let query = searchBar.text, !query.isEmpty else { return }
-
-        
-        if let userLocation = locationManager.location {
-            let lat = userLocation.coordinate.latitude
-            let lng = userLocation.coordinate.longitude
-            viewModel.search(query: query, lat: lat, lng: lng)
-        }
-        
-        searchBar.resignFirstResponder()
     }
 }
