@@ -1,5 +1,5 @@
 # Neshan Navigation App
-![ScreenRecording_09-08-2024 14-26-58_1](https://github.com/user-attachments/assets/858431fc-9eb4-44ee-b164-fab228c454d7)
+![ScreenRecording_09-08-202414-26-58_1-ezgif com-optimize](https://github.com/user-attachments/assets/a493f413-b5a2-490e-b137-00ed8af57b4d)
 
 This iOS application integrates with the **Neshan API** to provide powerful search and routing functionalities. Built on **Apple's MapKit**, the app offers a seamless experience for users to search for nearby locations and get directions based on their current location.
 
