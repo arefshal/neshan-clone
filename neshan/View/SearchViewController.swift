@@ -16,7 +16,7 @@ class SearchViewController: UIViewController {
     private let searchBar = UISearchBar()
     private let searchViewModel = SearchViewModel()
     private let mapButton = UIButton(type: .system)
-    private var savedLocations: [SearchResult] = []
+    private var savedLocations: [SavedLocation] = []
     weak var mapViewController: MapViewController?
     var userLocation: CLLocationCoordinate2D?
     
@@ -87,28 +87,27 @@ class SearchViewController: UIViewController {
     // MARK: - Helper Methods
     
     private func loadSavedLocations() {
-            if let savedData = UserDefaults.standard.data(forKey: "SavedLocations"),
-               let decodedLocations = try? JSONDecoder().decode([SearchResult].self, from: savedData) {
-                savedLocations = decodedLocations
-                tableView.reloadData()
-            }
-        }
-    
-    private func saveLocation(_ location: SearchResult) {
-           if !savedLocations.contains(where: { $0.title == location.title }) {
-               savedLocations.append(location)
-               saveSavedLocations()
-           }
-       }
-    private func saveSavedLocations() {
-            if let encodedData = try? JSONEncoder().encode(savedLocations) {
-                UserDefaults.standard.set(encodedData, forKey: "SavedLocations")
-            }
+            savedLocations = CoreDataManager.shared.fetchSavedLocations()
             tableView.reloadData()
         }
+        
+        private func saveLocation(_ location: SearchResult) {
+            CoreDataManager.shared.saveLocation(location)
+            loadSavedLocations()
+        }
+    private func saveSavedLocations() {
+        
+        let codableLocations = savedLocations.map { SavedLocationCodable(from: $0) }
+        
+        if let encodedData = try? JSONEncoder().encode(codableLocations) {
+            UserDefaults.standard.set(encodedData, forKey: "SavedLocations")
+        }
+        tableView.reloadData()
+    }
     private func deleteLocation(at index: Int) {
-            savedLocations.remove(at: index)
-            saveSavedLocations()
+            let locationToDelete = savedLocations[index]
+            CoreDataManager.shared.deleteLocation(locationToDelete)
+            loadSavedLocations()
         }
     
     private func pinLocationOnMap(_ location: SearchResult) {
@@ -145,20 +144,20 @@ extension SearchViewController: UISearchBarDelegate {
 
 extension SearchViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return searchBar.text?.isEmpty == true ? savedLocations.count : searchViewModel.numberOfResults()
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        
-        if searchBar.text?.isEmpty == true {
-            cell.textLabel?.text = savedLocations[indexPath.row].title
-        } else {
-            cell.textLabel?.text = searchViewModel.searchResults[indexPath.row].title
-        }
-        
-        return cell
-    }
+           return searchBar.text?.isEmpty == true ? savedLocations.count : searchViewModel.numberOfResults()
+       }
+       
+       func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+           let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+           
+           if searchBar.text?.isEmpty == true {
+               cell.textLabel?.text = savedLocations[indexPath.row].title
+           } else {
+               cell.textLabel?.text = searchViewModel.searchResults[indexPath.row].title
+           }
+           
+           return cell
+       }
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
             return searchBar.text?.isEmpty == true
         }
@@ -173,16 +172,18 @@ extension SearchViewController: UITableViewDataSource {
 
 extension SearchViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if searchBar.text?.isEmpty == true {
-            let savedLocation = savedLocations[indexPath.row]
-            pinLocationOnMap(savedLocation)
-        } else {
-            if let result = searchViewModel.getResult(at: indexPath.row) {
-                saveLocation(result)
-                pinLocationOnMap(result)
+            if searchBar.text?.isEmpty == true {
+                let savedLocation = savedLocations[indexPath.row]
+                let coordinate = CLLocationCoordinate2D(latitude: savedLocation.latitude, longitude: savedLocation.longitude)
+                mapViewController?.pinLocation(title: savedLocation.title ?? "", coordinate: coordinate)
+                dismiss(animated: true, completion: nil)
+            } else {
+                if let result = searchViewModel.getResult(at: indexPath.row) {
+                    saveLocation(result)
+                    pinLocationOnMap(result)
+                }
             }
         }
-    }
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         guard searchBar.text?.isEmpty == true else { return nil }
         
