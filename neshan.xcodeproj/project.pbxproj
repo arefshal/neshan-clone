@@ -7,15 +7,27 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B01CD5202C8D8DE5002E0A2E /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = B01CD51F2C8D8DE5002E0A2E /* Lottie */; };
+		B01CD5242C8D8EEA002E0A2E /* LaunchScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01CD5232C8D8EEA002E0A2E /* LaunchScreenViewController.swift */; };
+		B01CD5262C8D8FF3002E0A2E /* Animation.json in Resources */ = {isa = PBXBuildFile; fileRef = B01CD5252C8D8FF3002E0A2E /* Animation.json */; };
 		B08199282C89F5E2004511B6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B08199272C89F5E2004511B6 /* AppDelegate.swift */; };
 		B081992A2C89F5E2004511B6 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B08199292C89F5E2004511B6 /* SceneDelegate.swift */; };
-		B081992C2C89F5E2004511B6 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B081992B2C89F5E2004511B6 /* ViewController.swift */; };
-		B081992F2C89F5E2004511B6 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = B081992E2C89F5E2004511B6 /* Base */; };
+		B081992C2C89F5E2004511B6 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B081992B2C89F5E2004511B6 /* MapViewController.swift */; };
 		B08199312C89F5E3004511B6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B08199302C89F5E3004511B6 /* Assets.xcassets */; };
-		B08199342C89F5E3004511B6 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = B08199332C89F5E3004511B6 /* Base */; };
 		B081993F2C89F5E3004511B6 /* neshanTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B081993E2C89F5E3004511B6 /* neshanTests.swift */; };
-		B08199492C89F5E3004511B6 /* neshanUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B08199482C89F5E3004511B6 /* neshanUITests.swift */; };
 		B081994B2C89F5E3004511B6 /* neshanUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B081994A2C89F5E3004511B6 /* neshanUITestsLaunchTests.swift */; };
+		B0C32A072C8D373C00165C3D /* SavedLocations.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B0C32A052C8D373C00165C3D /* SavedLocations.xcdatamodeld */; };
+		B0C32A092C8D37C500165C3D /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C32A082C8D37C500165C3D /* CoreDataManager.swift */; };
+		B0CDA1222C8DAC1000E7B7FD /* PinLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CDA1212C8DAC1000E7B7FD /* PinLocation.swift */; };
+		B0CDA1242C8DB61500E7B7FD /* SavedLocationCodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CDA1232C8DB61500E7B7FD /* SavedLocationCodable.swift */; };
+		B0DA5C9A2C89F91200C808FE /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DA5C992C89F91200C808FE /* Location.swift */; };
+		B0DA5C9C2C89F92900C808FE /* SearchResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DA5C9B2C89F92900C808FE /* SearchResult.swift */; };
+		B0DA5C9E2C89F93F00C808FE /* RouteResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DA5C9D2C89F93F00C808FE /* RouteResponse.swift */; };
+		B0DA5CA02C89FA2200C808FE /* NeshanAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DA5C9F2C89FA2200C808FE /* NeshanAPIService.swift */; };
+		B0DA5CA42C89FBD000C808FE /* RoutingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DA5CA32C89FBD000C808FE /* RoutingService.swift */; };
+		B0DA5CAA2C89FE1800C808FE /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DA5CA92C89FE1800C808FE /* MapViewModel.swift */; };
+		B0DA5CAC2C89FED400C808FE /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DA5CAB2C89FED400C808FE /* SearchViewModel.swift */; };
+		B0DA5CAE2C89FF8200C808FE /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DA5CAD2C89FF8200C808FE /* SearchViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,19 +48,30 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		B01CD5232C8D8EEA002E0A2E /* LaunchScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchScreenViewController.swift; sourceTree = "<group>"; };
+		B01CD5252C8D8FF3002E0A2E /* Animation.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Animation.json; sourceTree = "<group>"; };
 		B08199242C89F5E2004511B6 /* neshan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = neshan.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B08199272C89F5E2004511B6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B08199292C89F5E2004511B6 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		B081992B2C89F5E2004511B6 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		B081992E2C89F5E2004511B6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		B081992B2C89F5E2004511B6 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		B08199302C89F5E3004511B6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		B08199332C89F5E3004511B6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B08199352C89F5E3004511B6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B081993A2C89F5E3004511B6 /* neshanTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = neshanTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B081993E2C89F5E3004511B6 /* neshanTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = neshanTests.swift; sourceTree = "<group>"; };
 		B08199442C89F5E3004511B6 /* neshanUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = neshanUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		B08199482C89F5E3004511B6 /* neshanUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = neshanUITests.swift; sourceTree = "<group>"; };
 		B081994A2C89F5E3004511B6 /* neshanUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = neshanUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		B0C32A062C8D373C00165C3D /* SavedLocations.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SavedLocations.xcdatamodel; sourceTree = "<group>"; };
+		B0C32A082C8D37C500165C3D /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
+		B0CDA1212C8DAC1000E7B7FD /* PinLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinLocation.swift; sourceTree = "<group>"; };
+		B0CDA1232C8DB61500E7B7FD /* SavedLocationCodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedLocationCodable.swift; sourceTree = "<group>"; };
+		B0DA5C992C89F91200C808FE /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
+		B0DA5C9B2C89F92900C808FE /* SearchResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResult.swift; sourceTree = "<group>"; };
+		B0DA5C9D2C89F93F00C808FE /* RouteResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteResponse.swift; sourceTree = "<group>"; };
+		B0DA5C9F2C89FA2200C808FE /* NeshanAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeshanAPIService.swift; sourceTree = "<group>"; };
+		B0DA5CA32C89FBD000C808FE /* RoutingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutingService.swift; sourceTree = "<group>"; };
+		B0DA5CA92C89FE1800C808FE /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
+		B0DA5CAB2C89FED400C808FE /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
+		B0DA5CAD2C89FF8200C808FE /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +79,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B01CD5202C8D8DE5002E0A2E /* Lottie in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -99,12 +123,14 @@
 		B08199262C89F5E2004511B6 /* neshan */ = {
 			isa = PBXGroup;
 			children = (
-				B08199272C89F5E2004511B6 /* AppDelegate.swift */,
-				B08199292C89F5E2004511B6 /* SceneDelegate.swift */,
-				B081992B2C89F5E2004511B6 /* ViewController.swift */,
-				B081992D2C89F5E2004511B6 /* Main.storyboard */,
+				B0C32A042C8D370D00165C3D /* CoreData */,
+				B0DA5C982C89F76F00C808FE /* View */,
+				B0DA5C972C89F75800C808FE /* App */,
+				B0DA5C952C89F73D00C808FE /* Network */,
+				B0DA5C932C89F71A00C808FE /* ViewModel */,
+				B0DA5C922C89F70200C808FE /* Model */,
 				B08199302C89F5E3004511B6 /* Assets.xcassets */,
-				B08199322C89F5E3004511B6 /* LaunchScreen.storyboard */,
+				B01CD5252C8D8FF3002E0A2E /* Animation.json */,
 				B08199352C89F5E3004511B6 /* Info.plist */,
 			);
 			path = neshan;
@@ -121,10 +147,67 @@
 		B08199472C89F5E3004511B6 /* neshanUITests */ = {
 			isa = PBXGroup;
 			children = (
-				B08199482C89F5E3004511B6 /* neshanUITests.swift */,
 				B081994A2C89F5E3004511B6 /* neshanUITestsLaunchTests.swift */,
 			);
 			path = neshanUITests;
+			sourceTree = "<group>";
+		};
+		B0C32A042C8D370D00165C3D /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				B0C32A052C8D373C00165C3D /* SavedLocations.xcdatamodeld */,
+				B0C32A082C8D37C500165C3D /* CoreDataManager.swift */,
+			);
+			path = CoreData;
+			sourceTree = "<group>";
+		};
+		B0DA5C922C89F70200C808FE /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				B0CDA1232C8DB61500E7B7FD /* SavedLocationCodable.swift */,
+				B0DA5C9D2C89F93F00C808FE /* RouteResponse.swift */,
+				B0DA5C9B2C89F92900C808FE /* SearchResult.swift */,
+				B0DA5C992C89F91200C808FE /* Location.swift */,
+				B0CDA1212C8DAC1000E7B7FD /* PinLocation.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		B0DA5C932C89F71A00C808FE /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				B0DA5CA92C89FE1800C808FE /* MapViewModel.swift */,
+				B0DA5CAB2C89FED400C808FE /* SearchViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		B0DA5C952C89F73D00C808FE /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				B0DA5CA32C89FBD000C808FE /* RoutingService.swift */,
+				B0DA5C9F2C89FA2200C808FE /* NeshanAPIService.swift */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		B0DA5C972C89F75800C808FE /* App */ = {
+			isa = PBXGroup;
+			children = (
+				B08199272C89F5E2004511B6 /* AppDelegate.swift */,
+				B08199292C89F5E2004511B6 /* SceneDelegate.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		B0DA5C982C89F76F00C808FE /* View */ = {
+			isa = PBXGroup;
+			children = (
+				B081992B2C89F5E2004511B6 /* MapViewController.swift */,
+				B0DA5CAD2C89FF8200C808FE /* SearchViewController.swift */,
+				B01CD5232C8D8EEA002E0A2E /* LaunchScreenViewController.swift */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -215,6 +298,9 @@
 				Base,
 			);
 			mainGroup = B081991B2C89F5E2004511B6;
+			packageReferences = (
+				B01CD51E2C8D8DE5002E0A2E /* XCRemoteSwiftPackageReference "lottie-ios" */,
+			);
 			productRefGroup = B08199252C89F5E2004511B6 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -231,9 +317,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B01CD5262C8D8FF3002E0A2E /* Animation.json in Resources */,
 				B08199312C89F5E3004511B6 /* Assets.xcassets in Resources */,
-				B08199342C89F5E3004511B6 /* Base in Resources */,
-				B081992F2C89F5E2004511B6 /* Base in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -258,9 +343,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B081992C2C89F5E2004511B6 /* ViewController.swift in Sources */,
+				B0DA5CA42C89FBD000C808FE /* RoutingService.swift in Sources */,
+				B0DA5CAE2C89FF8200C808FE /* SearchViewController.swift in Sources */,
+				B081992C2C89F5E2004511B6 /* MapViewController.swift in Sources */,
 				B08199282C89F5E2004511B6 /* AppDelegate.swift in Sources */,
+				B0DA5C9E2C89F93F00C808FE /* RouteResponse.swift in Sources */,
+				B0DA5CA02C89FA2200C808FE /* NeshanAPIService.swift in Sources */,
+				B0CDA1222C8DAC1000E7B7FD /* PinLocation.swift in Sources */,
+				B01CD5242C8D8EEA002E0A2E /* LaunchScreenViewController.swift in Sources */,
+				B0DA5C9C2C89F92900C808FE /* SearchResult.swift in Sources */,
+				B0C32A092C8D37C500165C3D /* CoreDataManager.swift in Sources */,
+				B0DA5CAC2C89FED400C808FE /* SearchViewModel.swift in Sources */,
+				B0CDA1242C8DB61500E7B7FD /* SavedLocationCodable.swift in Sources */,
+				B0DA5C9A2C89F91200C808FE /* Location.swift in Sources */,
 				B081992A2C89F5E2004511B6 /* SceneDelegate.swift in Sources */,
+				B0C32A072C8D373C00165C3D /* SavedLocations.xcdatamodeld in Sources */,
+				B0DA5CAA2C89FE1800C808FE /* MapViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -276,7 +374,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B08199492C89F5E3004511B6 /* neshanUITests.swift in Sources */,
 				B081994B2C89F5E3004511B6 /* neshanUITestsLaunchTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -295,25 +392,6 @@
 			targetProxy = B08199452C89F5E3004511B6 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
-
-/* Begin PBXVariantGroup section */
-		B081992D2C89F5E2004511B6 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				B081992E2C89F5E2004511B6 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		B08199322C89F5E3004511B6 /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				B08199332C89F5E3004511B6 /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		B081994C2C89F5E3004511B6 /* Debug */ = {
@@ -442,13 +520,15 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9RM4PPJJNX;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = neshan/Info.plist;
+				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "We need your location to track your position.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to provide better services.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -470,13 +550,15 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9RM4PPJJNX;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = neshan/Info.plist;
+				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "We need your location to track your position.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to provide better services.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -603,6 +685,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		B01CD51E2C8D8DE5002E0A2E /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airbnb/lottie-ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.5.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		B01CD51F2C8D8DE5002E0A2E /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B01CD51E2C8D8DE5002E0A2E /* XCRemoteSwiftPackageReference "lottie-ios" */;
+			productName = Lottie;
+		};
+/* End XCSwiftPackageProductDependency section */
+
+/* Begin XCVersionGroup section */
+		B0C32A052C8D373C00165C3D /* SavedLocations.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				B0C32A062C8D373C00165C3D /* SavedLocations.xcdatamodel */,
+			);
+			currentVersion = B0C32A062C8D373C00165C3D /* SavedLocations.xcdatamodel */;
+			path = SavedLocations.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = B081991C2C89F5E2004511B6 /* Project object */;
 }
