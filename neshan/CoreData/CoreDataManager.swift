@@ -7,19 +7,7 @@
 
 import CoreData
 
-struct SavedLocationCodable: Codable {
-    let title: String
-    let latitude: Double
-    let longitude: Double
-    
-    
-    init(from savedLocation: SavedLocation) {
-        self.title = savedLocation.title ?? ""
-        self.latitude = savedLocation.latitude
-        self.longitude = savedLocation.longitude
-    }
-}
-
+/// Manages Core Data operations for saved 
 class CoreDataManager {
     static let shared = CoreDataManager()
     
