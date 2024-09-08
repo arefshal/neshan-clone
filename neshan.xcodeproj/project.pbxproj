@@ -16,6 +16,7 @@
 		B081993F2C89F5E3004511B6 /* neshanTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B081993E2C89F5E3004511B6 /* neshanTests.swift */; };
 		B08199492C89F5E3004511B6 /* neshanUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B08199482C89F5E3004511B6 /* neshanUITests.swift */; };
 		B081994B2C89F5E3004511B6 /* neshanUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B081994A2C89F5E3004511B6 /* neshanUITestsLaunchTests.swift */; };
+		B0C32A072C8D373C00165C3D /* SavedLocations.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B0C32A052C8D373C00165C3D /* SavedLocations.xcdatamodeld */; };
 		B0DA5C9A2C89F91200C808FE /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DA5C992C89F91200C808FE /* Location.swift */; };
 		B0DA5C9C2C89F92900C808FE /* SearchResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DA5C9B2C89F92900C808FE /* SearchResult.swift */; };
 		B0DA5C9E2C89F93F00C808FE /* RouteResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DA5C9D2C89F93F00C808FE /* RouteResponse.swift */; };
@@ -57,6 +58,7 @@
 		B08199442C89F5E3004511B6 /* neshanUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = neshanUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B08199482C89F5E3004511B6 /* neshanUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = neshanUITests.swift; sourceTree = "<group>"; };
 		B081994A2C89F5E3004511B6 /* neshanUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = neshanUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		B0C32A062C8D373C00165C3D /* SavedLocations.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SavedLocations.xcdatamodel; sourceTree = "<group>"; };
 		B0DA5C992C89F91200C808FE /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		B0DA5C9B2C89F92900C808FE /* SearchResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResult.swift; sourceTree = "<group>"; };
 		B0DA5C9D2C89F93F00C808FE /* RouteResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteResponse.swift; sourceTree = "<group>"; };
@@ -115,6 +117,7 @@
 		B08199262C89F5E2004511B6 /* neshan */ = {
 			isa = PBXGroup;
 			children = (
+				B0C32A042C8D370D00165C3D /* CoreData */,
 				B0DA5C982C89F76F00C808FE /* View */,
 				B0DA5C972C89F75800C808FE /* App */,
 				B0DA5C962C89F75300C808FE /* Utilities */,
@@ -143,6 +146,14 @@
 				B081994A2C89F5E3004511B6 /* neshanUITestsLaunchTests.swift */,
 			);
 			path = neshanUITests;
+			sourceTree = "<group>";
+		};
+		B0C32A042C8D370D00165C3D /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				B0C32A052C8D373C00165C3D /* SavedLocations.xcdatamodeld */,
+			);
+			path = CoreData;
 			sourceTree = "<group>";
 		};
 		B0DA5C922C89F70200C808FE /* Model */ = {
@@ -340,6 +351,7 @@
 				B0DA5CAC2C89FED400C808FE /* SearchViewModel.swift in Sources */,
 				B0DA5C9A2C89F91200C808FE /* Location.swift in Sources */,
 				B081992A2C89F5E2004511B6 /* SceneDelegate.swift in Sources */,
+				B0C32A072C8D373C00165C3D /* SavedLocations.xcdatamodeld in Sources */,
 				B0DA5CAA2C89FE1800C808FE /* MapViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -685,6 +697,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		B0C32A052C8D373C00165C3D /* SavedLocations.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				B0C32A062C8D373C00165C3D /* SavedLocations.xcdatamodel */,
+			);
+			currentVersion = B0C32A062C8D373C00165C3D /* SavedLocations.xcdatamodel */;
+			path = SavedLocations.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = B081991C2C89F5E2004511B6 /* Project object */;
 }
