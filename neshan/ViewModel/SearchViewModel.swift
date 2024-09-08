@@ -52,4 +52,7 @@ class SearchViewModel {
         guard index >= 0 && index < searchResults.count else { return nil }
         return searchResults[index]
     }
+    func clearResults() {
+        searchResults = []
+    }
 }
