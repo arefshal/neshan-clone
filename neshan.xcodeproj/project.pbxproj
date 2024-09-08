@@ -19,6 +19,7 @@
 		B0C32A072C8D373C00165C3D /* SavedLocations.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B0C32A052C8D373C00165C3D /* SavedLocations.xcdatamodeld */; };
 		B0C32A092C8D37C500165C3D /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C32A082C8D37C500165C3D /* CoreDataManager.swift */; };
 		B0CDA1222C8DAC1000E7B7FD /* PinLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CDA1212C8DAC1000E7B7FD /* PinLocation.swift */; };
+		B0CDA1242C8DB61500E7B7FD /* SavedLocationCodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CDA1232C8DB61500E7B7FD /* SavedLocationCodable.swift */; };
 		B0DA5C9A2C89F91200C808FE /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DA5C992C89F91200C808FE /* Location.swift */; };
 		B0DA5C9C2C89F92900C808FE /* SearchResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DA5C9B2C89F92900C808FE /* SearchResult.swift */; };
 		B0DA5C9E2C89F93F00C808FE /* RouteResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DA5C9D2C89F93F00C808FE /* RouteResponse.swift */; };
@@ -62,6 +63,7 @@
 		B0C32A062C8D373C00165C3D /* SavedLocations.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SavedLocations.xcdatamodel; sourceTree = "<group>"; };
 		B0C32A082C8D37C500165C3D /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		B0CDA1212C8DAC1000E7B7FD /* PinLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinLocation.swift; sourceTree = "<group>"; };
+		B0CDA1232C8DB61500E7B7FD /* SavedLocationCodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedLocationCodable.swift; sourceTree = "<group>"; };
 		B0DA5C992C89F91200C808FE /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		B0DA5C9B2C89F92900C808FE /* SearchResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResult.swift; sourceTree = "<group>"; };
 		B0DA5C9D2C89F93F00C808FE /* RouteResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteResponse.swift; sourceTree = "<group>"; };
@@ -162,6 +164,7 @@
 		B0DA5C922C89F70200C808FE /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				B0CDA1232C8DB61500E7B7FD /* SavedLocationCodable.swift */,
 				B0DA5C9D2C89F93F00C808FE /* RouteResponse.swift */,
 				B0DA5C9B2C89F92900C808FE /* SearchResult.swift */,
 				B0DA5C992C89F91200C808FE /* Location.swift */,
@@ -351,6 +354,7 @@
 				B0DA5C9C2C89F92900C808FE /* SearchResult.swift in Sources */,
 				B0C32A092C8D37C500165C3D /* CoreDataManager.swift in Sources */,
 				B0DA5CAC2C89FED400C808FE /* SearchViewModel.swift in Sources */,
+				B0CDA1242C8DB61500E7B7FD /* SavedLocationCodable.swift in Sources */,
 				B0DA5C9A2C89F91200C808FE /* Location.swift in Sources */,
 				B081992A2C89F5E2004511B6 /* SceneDelegate.swift in Sources */,
 				B0C32A072C8D373C00165C3D /* SavedLocations.xcdatamodeld in Sources */,
