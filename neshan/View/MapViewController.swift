@@ -14,13 +14,13 @@ class MapViewController: UIViewController {
     
     // MARK: - Properties
     
-    private let mapView = MKMapView()
+    let mapView = MKMapView()
     private let locationManager = CLLocationManager()
     private let showLocationButton = UIButton(type: .system)
     private let searchButton = UIButton(type: .system)
     private var currentRoute: MKPolyline?
     private let routingService = RoutingService()
-     var userLocation: CLLocationCoordinate2D?
+    var userLocation: CLLocationCoordinate2D?
     // MARK: - Lifecycle Methods
     
     override func viewDidLoad() {
@@ -132,9 +132,19 @@ class MapViewController: UIViewController {
         mapView.setRegion(region, animated: true)
     }
     
+    func clearRoute() {
+        if let currentRoute = currentRoute {
+            mapView.removeOverlay(currentRoute)
+            self.currentRoute = nil
+        }
+    }
+    
     func showSearchResults(_ results: [SearchResult]) {
-        mapView.removeAnnotations(mapView.annotations)
         
+        mapView.removeAnnotations(mapView.annotations)
+        clearRoute()
+        
+        // اضافه کردن انوتیشن‌های جدید به نقشه
         for result in results {
             let annotation = MKPointAnnotation()
             annotation.title = result.title
@@ -142,88 +152,114 @@ class MapViewController: UIViewController {
             mapView.addAnnotation(annotation)
         }
         
+        // تنظیم نقشه به موقعیت اولین نتیجه
         if let firstResult = results.first {
             let region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: firstResult.location.y, longitude: firstResult.location.x), latitudinalMeters: 5000, longitudinalMeters: 5000)
             mapView.setRegion(region, animated: true)
         }
     }
+}
     
     // MARK: - Private Methods
     
-    private func showRoute(to destinationCoordinate: CLLocationCoordinate2D) {
-        guard let userLocation = locationManager.location?.coordinate else { return }
-        
-        routingService.getRoute(from: userLocation, to: destinationCoordinate) { [weak self] polyline in
-            guard let self = self else { return }
+    
+    
+    // MARK: - CLLocationManagerDelegate
+    
+    extension MapViewController: CLLocationManagerDelegate {
+        func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+            guard let location = locations.first else { return }
+            userLocation = location.coordinate
             
-            DispatchQueue.main.async {
-                if let currentRoute = self.currentRoute {
-                    self.mapView.removeOverlay(currentRoute)
-                }
+            let region = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
+            mapView.setRegion(region, animated: true)
+            
+            locationManager.stopUpdatingLocation()
+        }
+        
+        func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+            print("Failed to get user location: \(error)")
+        }
+    }
+    
+    // MARK: - MKMapViewDelegate
+    
+    extension MapViewController: MKMapViewDelegate {
+        func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+            guard let annotation = view.annotation else { return }
+            
+            showRoute(to: annotation.coordinate)
+     
+            let pinLocation = PinLocation(
+                title: (annotation.title ?? "Unknown Location") ?? "Unknown Location",
+                latitude: annotation.coordinate.latitude,
+                longitude: annotation.coordinate.longitude
+            )
+            
+            
+            saveLocationFromPin(pinLocation)
+        }
+        
+        
+        private func saveLocationFromPin(_ location: PinLocation) {
+            let savedLocation = SavedLocation(context: CoreDataManager.shared.context)
+            savedLocation.title = location.title
+            savedLocation.latitude = location.latitude
+            savedLocation.longitude = location.longitude
+            CoreDataManager.shared.saveContext()
+            
+            print("Location saved: \(location.title)")
+        }
+        
+        
+        func showRoute(to destinationCoordinate: CLLocationCoordinate2D) {
+            guard let userLocation = locationManager.location?.coordinate else { return }
+            
+            routingService.getRoute(from: userLocation, to: destinationCoordinate) { [weak self] polyline in
+                guard let self = self else { return }
                 
-                if let polyline = polyline {
-                    self.currentRoute = polyline
-                    self.mapView.addOverlay(polyline)
+                DispatchQueue.main.async {
+                    if let currentRoute = self.currentRoute {
+                        self.mapView.removeOverlay(currentRoute)
+                    }
                     
-                    self.mapView.setVisibleMapRect(polyline.boundingMapRect, edgePadding: UIEdgeInsets(top: 50, left: 50, bottom: 50, right: 50), animated: true)
+                    if let polyline = polyline {
+                        self.currentRoute = polyline
+                        self.mapView.addOverlay(polyline)
+                        
+                        
+                        self.mapView.setVisibleMapRect(polyline.boundingMapRect, edgePadding: UIEdgeInsets(top: 50, left: 50, bottom: 50, right: 50), animated: true)
+                    }
                 }
             }
         }
-    }
-}
-
-// MARK: - CLLocationManagerDelegate
-
-extension MapViewController: CLLocationManagerDelegate {
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        guard let location = locations.first else { return }
-        userLocation = location.coordinate
         
-        let region = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
-        mapView.setRegion(region, animated: true)
         
-        locationManager.stopUpdatingLocation()
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print("Failed to get user location: \(error)")
-    }
-}
-
-// MARK: - MKMapViewDelegate
-
-extension MapViewController: MKMapViewDelegate {
-    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        guard !(annotation is MKUserLocation) else { return nil }
-        
-        let identifier = "CustomPin"
-        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
-        
-        if annotationView == nil {
-            annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
-            annotationView?.canShowCallout = true
-        } else {
-            annotationView?.annotation = annotation
+        func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+            if let polyline = overlay as? MKPolyline {
+                let renderer = MKPolylineRenderer(polyline: polyline)
+                renderer.strokeColor = UIColor.blue
+                renderer.lineWidth = 4.0
+                return renderer
+            }
+            return MKOverlayRenderer(overlay: overlay)
         }
         
-        return annotationView
-    }
-    
-    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        guard let annotation = view.annotation else { return }
         
-        if let coordinate = annotation.coordinate as? CLLocationCoordinate2D {
-            showRoute(to: coordinate)
+        func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+            guard !(annotation is MKUserLocation) else { return nil }
+            
+            let identifier = "CustomPin"
+            var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+            
+            if annotationView == nil {
+                annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+                annotationView?.canShowCallout = true
+            } else {
+                annotationView?.annotation = annotation
+            }
+            
+            return annotationView
         }
     }
-    
-    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-        if let polyline = overlay as? MKPolyline {
-            let renderer = MKPolylineRenderer(polyline: polyline)
-            renderer.strokeColor = UIColor.blue
-            renderer.lineWidth = 4.0
-            return renderer
-        }
-        return MKOverlayRenderer(overlay: overlay)
-    }
-}
+
