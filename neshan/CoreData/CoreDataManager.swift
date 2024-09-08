@@ -6,7 +6,7 @@
 //
 
 import CoreData
-
+/// Codable representation of SavedLocation
 struct SavedLocationCodable: Codable {
     let title: String
     let latitude: Double
@@ -19,7 +19,7 @@ struct SavedLocationCodable: Codable {
         self.longitude = savedLocation.longitude
     }
 }
-
+/// Manages Core Data operations for saved 
 class CoreDataManager {
     static let shared = CoreDataManager()
     
