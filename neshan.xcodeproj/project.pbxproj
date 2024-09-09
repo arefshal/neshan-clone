@@ -10,6 +10,7 @@
 		B01CD5202C8D8DE5002E0A2E /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = B01CD51F2C8D8DE5002E0A2E /* Lottie */; };
 		B01CD5242C8D8EEA002E0A2E /* LaunchScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B01CD5232C8D8EEA002E0A2E /* LaunchScreenViewController.swift */; };
 		B01CD5262C8D8FF3002E0A2E /* Animation.json in Resources */ = {isa = PBXBuildFile; fileRef = B01CD5252C8D8FF3002E0A2E /* Animation.json */; };
+		B0263A902C8EE40A00E1B82F /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0263A8F2C8EE40A00E1B82F /* NetworkManager.swift */; };
 		B08199282C89F5E2004511B6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B08199272C89F5E2004511B6 /* AppDelegate.swift */; };
 		B081992A2C89F5E2004511B6 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B08199292C89F5E2004511B6 /* SceneDelegate.swift */; };
 		B081992C2C89F5E2004511B6 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B081992B2C89F5E2004511B6 /* MapViewController.swift */; };
@@ -25,7 +26,6 @@
 		B0DA5C9E2C89F93F00C808FE /* RouteResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DA5C9D2C89F93F00C808FE /* RouteResponse.swift */; };
 		B0DA5CA02C89FA2200C808FE /* NeshanAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DA5C9F2C89FA2200C808FE /* NeshanAPIService.swift */; };
 		B0DA5CA42C89FBD000C808FE /* RoutingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DA5CA32C89FBD000C808FE /* RoutingService.swift */; };
-		B0DA5CAA2C89FE1800C808FE /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DA5CA92C89FE1800C808FE /* MapViewModel.swift */; };
 		B0DA5CAC2C89FED400C808FE /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DA5CAB2C89FED400C808FE /* SearchViewModel.swift */; };
 		B0DA5CAE2C89FF8200C808FE /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0DA5CAD2C89FF8200C808FE /* SearchViewController.swift */; };
 /* End PBXBuildFile section */
@@ -50,6 +50,7 @@
 /* Begin PBXFileReference section */
 		B01CD5232C8D8EEA002E0A2E /* LaunchScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchScreenViewController.swift; sourceTree = "<group>"; };
 		B01CD5252C8D8FF3002E0A2E /* Animation.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Animation.json; sourceTree = "<group>"; };
+		B0263A8F2C8EE40A00E1B82F /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		B08199242C89F5E2004511B6 /* neshan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = neshan.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B08199272C89F5E2004511B6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B08199292C89F5E2004511B6 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -69,7 +70,6 @@
 		B0DA5C9D2C89F93F00C808FE /* RouteResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteResponse.swift; sourceTree = "<group>"; };
 		B0DA5C9F2C89FA2200C808FE /* NeshanAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeshanAPIService.swift; sourceTree = "<group>"; };
 		B0DA5CA32C89FBD000C808FE /* RoutingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutingService.swift; sourceTree = "<group>"; };
-		B0DA5CA92C89FE1800C808FE /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
 		B0DA5CAB2C89FED400C808FE /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
 		B0DA5CAD2C89FF8200C808FE /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -176,7 +176,6 @@
 		B0DA5C932C89F71A00C808FE /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				B0DA5CA92C89FE1800C808FE /* MapViewModel.swift */,
 				B0DA5CAB2C89FED400C808FE /* SearchViewModel.swift */,
 			);
 			path = ViewModel;
@@ -187,6 +186,7 @@
 			children = (
 				B0DA5CA32C89FBD000C808FE /* RoutingService.swift */,
 				B0DA5C9F2C89FA2200C808FE /* NeshanAPIService.swift */,
+				B0263A8F2C8EE40A00E1B82F /* NetworkManager.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -353,12 +353,12 @@
 				B01CD5242C8D8EEA002E0A2E /* LaunchScreenViewController.swift in Sources */,
 				B0DA5C9C2C89F92900C808FE /* SearchResult.swift in Sources */,
 				B0C32A092C8D37C500165C3D /* CoreDataManager.swift in Sources */,
+				B0263A902C8EE40A00E1B82F /* NetworkManager.swift in Sources */,
 				B0DA5CAC2C89FED400C808FE /* SearchViewModel.swift in Sources */,
 				B0CDA1242C8DB61500E7B7FD /* SavedLocationCodable.swift in Sources */,
 				B0DA5C9A2C89F91200C808FE /* Location.swift in Sources */,
 				B081992A2C89F5E2004511B6 /* SceneDelegate.swift in Sources */,
 				B0C32A072C8D373C00165C3D /* SavedLocations.xcdatamodeld in Sources */,
-				B0DA5CAA2C89FE1800C808FE /* MapViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

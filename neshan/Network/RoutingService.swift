@@ -104,7 +104,7 @@ class RoutingService {
     }
 }
 
-// Add this extension at the end of the file
+
 extension String {
     func decodedPolyline() -> [(latitude: Double, longitude: Double)] {
         var coordinates: [(Double, Double)] = []
