@@ -50,16 +50,22 @@ class NeshanAPIService {
                 return
             }
             
+            // Log the raw data
+            if let jsonString = String(data: data, encoding: .utf8) {
+                print("Raw JSON response: \(jsonString)")
+            }
+            
             // Parse the JSON response
             do {
                 let decoder = JSONDecoder()
                 let searchResponse = try decoder.decode(SearchResponse.self, from: data)
                 completion(.success(searchResponse.items))
             } catch {
+                print("Error decoding JSON: \(error)")
                 completion(.failure(error))
             }
         }
-        
+
         task.resume()
     }
 }
