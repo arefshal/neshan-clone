@@ -7,17 +7,18 @@ import UIKit
 import MapKit
 
 class SearchViewController: UIViewController {
-    
+
     // MARK: - Properties
     
     private let tableView = UITableView()
     private let searchBar = UISearchBar()
     private let searchViewModel = SearchViewModel()
     private let mapButton = UIButton(type: .system)
+    private let activityIndicator = UIActivityIndicatorView(style: .medium)
     private var savedLocations: [SavedLocation] = []
     weak var mapViewController: MapViewController?
     var userLocation: CLLocationCoordinate2D?
-    
+
     // MARK: - Lifecycle Methods
     
     override func viewDidLoad() {
@@ -28,7 +29,7 @@ class SearchViewController: UIViewController {
         loadSavedLocations()
         userLocation = mapViewController?.userLocation
     }
-    
+
     // MARK: - Setup Methods
     
     private func setupUI() {
@@ -36,6 +37,7 @@ class SearchViewController: UIViewController {
         setupSearchBar()
         setupTableView()
         setupMapButton()
+        setupActivityIndicator()
     }
     
     private func setupSearchBar() {
@@ -74,13 +76,36 @@ class SearchViewController: UIViewController {
             mapButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
         ])
     }
-    
+
+    private func setupActivityIndicator() {
+        activityIndicator.hidesWhenStopped = true
+        view.addSubview(activityIndicator)
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
+    }
+
     private func setupBindings() {
         searchViewModel.onUpdate = { [weak self] in
-            self?.tableView.reloadData()
+            DispatchQueue.main.async {
+                if self?.searchViewModel.isLoading == true {
+                    self?.activityIndicator.startAnimating()
+                } else {
+                    self?.activityIndicator.stopAnimating()
+                    self?.tableView.reloadData()
+                }
+            }
+        }
+
+        searchViewModel.onError = { [weak self] errorMessage in
+            DispatchQueue.main.async {
+                self?.showAlertForError(message: errorMessage)
+            }
         }
     }
-    
+
     // MARK: - Helper Methods
     
     private func loadSavedLocations() {
@@ -95,15 +120,13 @@ class SearchViewController: UIViewController {
                    savedLocation.longitude == location.location.x
         }
         
-     
         if !isDuplicate {
             CoreDataManager.shared.saveLocation(location)
-            loadSavedLocations() 
+            loadSavedLocations()
         } else {
             print("Location already saved.")
         }
     }
-
     
     private func deleteLocation(at index: Int) {
         let locationToDelete = savedLocations[index]
@@ -119,6 +142,32 @@ class SearchViewController: UIViewController {
         
         dismiss(animated: true, completion: nil)
     }
+
+    private func showAlertForError(message: String) {
+        let alert = UIAlertController(title: "No Internet Connection", message: message, preferredStyle: .alert)
+        
+        
+        alert.addAction(UIAlertAction(title: "Retry", style: .default, handler: { [weak self] _ in
+            self?.searchBarSearchButtonClicked(self?.searchBar ?? UISearchBar())
+        }))
+        
+        
+        alert.addAction(UIAlertAction(title: "Go to Settings", style: .default, handler: { _ in
+            guard let settingsUrl = URL(string: UIApplication.openSettingsURLString) else {
+                return
+            }
+            
+            if UIApplication.shared.canOpenURL(settingsUrl) {
+                UIApplication.shared.open(settingsUrl, options: [:], completionHandler: nil)
+            }
+        }))
+        
+        // Cancel action
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        present(alert, animated: true, completion: nil)
+    }
+
     
     // MARK: - Action Methods
     
@@ -129,31 +178,32 @@ class SearchViewController: UIViewController {
     }
 }
 
-
-
 // MARK: - UISearchBarDelegate
 
 extension SearchViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        if !searchText.isEmpty, let location = userLocation {
-            searchViewModel.search(query: searchText, lat: location.latitude, lng: location.longitude)
-        } else {
+        if searchText.isEmpty {
             searchViewModel.clearResults()
+            loadSavedLocations()
+        } else if let location = userLocation {
+            searchViewModel.search(query: searchText, lat: location.latitude, lng: location.longitude)
         }
     }
-    
+
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        guard NetworkManager.shared.isConnectedToNetwork() else {
+            showAlertForError(message: "The network is disconnected. Please try again.")
+            return
+        }
+        
         guard let mapVC = mapViewController else { return }
         
         mapVC.mapView.removeAnnotations(mapVC.mapView.annotations)
-        
         mapVC.showSearchResults(searchViewModel.searchResults)
         
-
         dismiss(animated: true, completion: nil)
     }
 }
-
 
 // MARK: - UITableViewDataSource
 

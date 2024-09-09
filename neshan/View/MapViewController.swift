@@ -144,7 +144,7 @@ class MapViewController: UIViewController {
         mapView.removeAnnotations(mapView.annotations)
         clearRoute()
         
-        // اضافه کردن انوتیشن‌های جدید به نقشه
+        
         for result in results {
             let annotation = MKPointAnnotation()
             annotation.title = result.title
@@ -152,7 +152,7 @@ class MapViewController: UIViewController {
             mapView.addAnnotation(annotation)
         }
         
-        // تنظیم نقشه به موقعیت اولین نتیجه
+       
         if let firstResult = results.first {
             let region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: firstResult.location.y, longitude: firstResult.location.x), latitudinalMeters: 5000, longitudinalMeters: 5000)
             mapView.setRegion(region, animated: true)
@@ -160,7 +160,7 @@ class MapViewController: UIViewController {
     }
 }
     
-    // MARK: - Private Methods
+    
     
     
     

@@ -1,10 +1,3 @@
-//
-//  SearchViewModel.swift
-//  neshan
-//
-//  Created by Aref on 9/5/24.
-//
-
 import MapKit
 import CoreLocation
 
@@ -17,19 +10,34 @@ class SearchViewModel {
     }
 
     var onUpdate: (() -> Void)?
+    var onError: ((String) -> Void)?
+    var isLoading: Bool = false {
+        didSet {
+            onUpdate?()
+        }
+    }
 
     private let neshanService = NeshanAPIService()
     private let routingService = RoutingService()
 
     // Fetch nearby places (e.g., cafes) based on query and current location
     func search(query: String, lat: Double, lng: Double) {
+        
+        guard NetworkManager.shared.isConnectedToNetwork() else {
+            onError?("No internet connection. Please try again.")
+            return
+        }
+        
+        isLoading = true
         neshanService.searchPlaces(query: query, lat: lat, lng: lng) { [weak self] result in
             DispatchQueue.main.async {
+                self?.isLoading = false
                 switch result {
                 case .success(let results):
                     self?.searchResults = results
                 case .failure(let error):
                     print("Search failed: \(error.localizedDescription)")
+                    self?.onError?("Search failed: \(error.localizedDescription)")
                     self?.searchResults = []
                 }
             }
@@ -58,7 +66,9 @@ class SearchViewModel {
         return searchResults[index]
     }
 
+    // Clear search results
     func clearResults() {
         searchResults = []
+        onUpdate?()
     }
 }
