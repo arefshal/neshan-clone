@@ -15,7 +15,6 @@ class SearchViewController: UIViewController {
     private let searchViewModel = SearchViewModel()
     private let mapButton = UIButton(type: .system)
     private let activityIndicator = UIActivityIndicatorView(style: .medium)
-    private var savedLocations: [SavedLocation] = []
     weak var mapViewController: MapViewController?
     var userLocation: CLLocationCoordinate2D?
 
@@ -26,7 +25,7 @@ class SearchViewController: UIViewController {
         
         setupUI()
         setupBindings()
-        loadSavedLocations()
+        searchViewModel.fetchSavedLocations()
         userLocation = mapViewController?.userLocation
     }
 
@@ -90,12 +89,8 @@ class SearchViewController: UIViewController {
     private func setupBindings() {
         searchViewModel.onUpdate = { [weak self] in
             DispatchQueue.main.async {
-                if self?.searchViewModel.isLoading == true {
-                    self?.activityIndicator.startAnimating()
-                } else {
-                    self?.activityIndicator.stopAnimating()
-                    self?.tableView.reloadData()
-                }
+                self?.activityIndicator.isHidden = !(self?.searchViewModel.isLoading ?? false)
+                self?.tableView.reloadData()
             }
         }
 
@@ -104,36 +99,39 @@ class SearchViewController: UIViewController {
                 self?.showAlertForError(message: errorMessage)
             }
         }
+
+        searchViewModel.onSelectLocation = { [weak self] location in
+            self?.pinLocationOnMap(location)
+        }
+        
+        searchViewModel.onSelectSavedLocation = { [weak self] savedLocation in
+            let coordinate = CLLocationCoordinate2D(latitude: savedLocation.latitude, longitude: savedLocation.longitude)
+            self?.mapViewController?.pinLocation(title: savedLocation.title ?? "", coordinate: coordinate)
+            self?.dismiss(animated: true, completion: nil)
+        }
     }
 
     // MARK: - Helper Methods
-    
-    private func loadSavedLocations() {
-        savedLocations = CoreDataManager.shared.fetchSavedLocations()
-        tableView.reloadData()
-    }
-    
-    private func saveLocation(_ location: SearchResult) {
-        let isDuplicate = savedLocations.contains { savedLocation in
-            return savedLocation.title == location.title &&
-                   savedLocation.latitude == location.location.y &&
-                   savedLocation.longitude == location.location.x
-        }
+
+    private func showAlertForError(message: String) {
+        let alert = UIAlertController(title: "No Internet Connection", message: message, preferredStyle: .alert)
         
-        if !isDuplicate {
-            CoreDataManager.shared.saveLocation(location)
-            loadSavedLocations()
-        } else {
-            print("Location already saved.")
-        }
+        alert.addAction(UIAlertAction(title: "Retry", style: .default, handler: { [weak self] _ in
+            self?.searchBarSearchButtonClicked(self?.searchBar ?? UISearchBar())
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Go to Settings", style: .default, handler: { _ in
+            guard let settingsUrl = URL(string: UIApplication.openSettingsURLString) else { return }
+            if UIApplication.shared.canOpenURL(settingsUrl) {
+                UIApplication.shared.open(settingsUrl, options: [:], completionHandler: nil)
+            }
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        present(alert, animated: true, completion: nil)
     }
-    
-    private func deleteLocation(at index: Int) {
-        let locationToDelete = savedLocations[index]
-        CoreDataManager.shared.deleteLocation(locationToDelete)
-        loadSavedLocations()
-    }
-    
+
     private func pinLocationOnMap(_ location: SearchResult) {
         guard let mapVC = mapViewController else { return }
         
@@ -143,32 +141,6 @@ class SearchViewController: UIViewController {
         dismiss(animated: true, completion: nil)
     }
 
-    private func showAlertForError(message: String) {
-        let alert = UIAlertController(title: "No Internet Connection", message: message, preferredStyle: .alert)
-        
-        
-        alert.addAction(UIAlertAction(title: "Retry", style: .default, handler: { [weak self] _ in
-            self?.searchBarSearchButtonClicked(self?.searchBar ?? UISearchBar())
-        }))
-        
-        
-        alert.addAction(UIAlertAction(title: "Go to Settings", style: .default, handler: { _ in
-            guard let settingsUrl = URL(string: UIApplication.openSettingsURLString) else {
-                return
-            }
-            
-            if UIApplication.shared.canOpenURL(settingsUrl) {
-                UIApplication.shared.open(settingsUrl, options: [:], completionHandler: nil)
-            }
-        }))
-        
-        // Cancel action
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        
-        present(alert, animated: true, completion: nil)
-    }
-
-    
     // MARK: - Action Methods
     
     @objc private func showMap() {
@@ -182,12 +154,7 @@ class SearchViewController: UIViewController {
 
 extension SearchViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        if searchText.isEmpty {
-            searchViewModel.clearResults()
-            loadSavedLocations()
-        } else if let location = userLocation {
-            searchViewModel.search(query: searchText, lat: location.latitude, lng: location.longitude)
-        }
+        searchViewModel.searchQuery = searchText
     }
 
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
@@ -209,28 +176,22 @@ extension SearchViewController: UISearchBarDelegate {
 
 extension SearchViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return searchBar.text?.isEmpty == true ? savedLocations.count : searchViewModel.numberOfResults()
+        return searchViewModel.numberOfItems()
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        
-        if searchBar.text?.isEmpty == true {
-            cell.textLabel?.text = savedLocations[indexPath.row].title
-        } else {
-            cell.textLabel?.text = searchViewModel.searchResults[indexPath.row].title
-        }
-        
+        cell.textLabel?.text = searchViewModel.item(at: indexPath.row)
         return cell
     }
     
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        return searchBar.text?.isEmpty == true
+        return !searchViewModel.isSearching
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            deleteLocation(at: indexPath.row)
+            searchViewModel.deleteLocation(at: indexPath.row)
         }
     }
 }
@@ -239,29 +200,18 @@ extension SearchViewController: UITableViewDataSource {
 
 extension SearchViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if searchBar.text?.isEmpty == true {
-            let savedLocation = savedLocations[indexPath.row]
-            let coordinate = CLLocationCoordinate2D(latitude: savedLocation.latitude, longitude: savedLocation.longitude)
-            mapViewController?.pinLocation(title: savedLocation.title ?? "", coordinate: coordinate)
-            dismiss(animated: true, completion: nil)
-        } else {
-            if let result = searchViewModel.getResult(at: indexPath.row) {
-                saveLocation(result)
-                pinLocationOnMap(result)
-            }
-        }
+        searchViewModel.selectItem(at: indexPath.row)
     }
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        guard searchBar.text?.isEmpty == true else { return nil }
+        guard !searchViewModel.isSearching else { return nil }
         
         let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { [weak self] (_, _, completionHandler) in
-            self?.deleteLocation(at: indexPath.row)
+            self?.searchViewModel.deleteLocation(at: indexPath.row)
             completionHandler(true)
         }
-        deleteAction.backgroundColor = .red
         
-        let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
-        return configuration
+        deleteAction.backgroundColor = .red
+        return UISwipeActionsConfiguration(actions: [deleteAction])
     }
 }
